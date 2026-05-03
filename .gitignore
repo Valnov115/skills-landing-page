@@ -1,0 +1,10 @@
+# Environment variables — never commit API keys or secrets
+.env
+.env.*
+!.env.example
+
+# Local Claude Code settings (machine-specific paths)
+.claude/settings.local.json
+
+# Generated images
+generated images/

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills Catalog — Claude Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,400&family=Fira+Code:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #07080f;
+      --surface: rgba(255,255,255,0.035);
+      --surface-hover: rgba(255,255,255,0.065);
+      --border: rgba(255,255,255,0.07);
+      --text: #e4e0d8;
+      --muted: #5c5c72;
+      --faint: #1a1a2a;
+
+      --superpowers: #a78bfa;
+      --documents: #f59e0b;
+      --design: #22d3ee;
+      --dev: #4ade80;
+      --tools: #fb923c;
+      --brand: #f472b6;
+      --deprecated: #3a3a4e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 60% at 15% 5%, rgba(167,139,250,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 85% 85%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 70% at 60% 40%, rgba(74,222,128,0.025) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: bgDrift 25s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgDrift {
+      0%   { opacity: 0.7; transform: scale(1) translate(0, 0); }
+      100% { opacity: 1;   transform: scale(1.06) translate(1.5%, -1.5%); }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 72px 0 52px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 40px;
+    }
+
+    .eyebrow {
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 7.5vw, 108px);
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+    }
+
+    h1 em {
+      display: block;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(228,224,216,0.42);
+    }
+
+    .header-stat {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .stat-number {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .nav-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 40px;
+    }
+
+    .nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px 6px 10px;
+      border-radius: 100px;
+      border: 1px solid;
+      font-size: 11.5px;
+      font-family: 'Fira Code', monospace;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .nav-pill:hover { transform: translateY(-1px); }
+
+    .nav-pill .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pill-sp  { border-color: var(--superpowers); color: var(--superpowers); }
+    .pill-sp:hover  { background: rgba(167,139,250,0.09); }
+    .pill-sp .dot   { background: var(--superpowers); }
+
+    .pill-doc { border-color: var(--documents); color: var(--documents); }
+    .pill-doc:hover { background: rgba(245,158,11,0.09); }
+    .pill-doc .dot  { background: var(--documents); }
+
+    .pill-des { border-color: var(--design); color: var(--design); }
+    .pill-des:hover { background: rgba(34,211,238,0.09); }
+    .pill-des .dot  { background: var(--design); }
+
+    .pill-dev { border-color: var(--dev); color: var(--dev); }
+    .pill-dev:hover { background: rgba(74,222,128,0.09); }
+    .pill-dev .dot  { background: var(--dev); }
+
+    .pill-tol { border-color: var(--tools); color: var(--tools); }
+    .pill-tol:hover { background: rgba(251,146,60,0.09); }
+    .pill-tol .dot  { background: var(--tools); }
+
+    .pill-brn { border-color: var(--brand); color: var(--brand); }
+    .pill-brn:hover { background: rgba(244,114,182,0.09); }
+    .pill-brn .dot  { background: var(--brand); }
+
+    /* ── MAIN ── */
+    main { padding: 80px 0 120px; }
+
+    .category-section { margin-bottom: 76px; }
+
+    .cat-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cat-bar {
+      width: 6px; height: 30px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .cat-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .cat-count {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 14px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px 18px 26px;
+      transition: background 0.22s, border-color 0.22s, transform 0.22s, box-shadow 0.22s;
+      position: relative;
+      animation: cardIn 0.45s ease backwards;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 12px; bottom: 12px;
+      width: 3px;
+      border-radius: 2px;
+    }
+
+    .skill-card:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+
+    .skill-card.deprecated { opacity: 0.45; }
+
+    .skill-name {
+      font-family: 'Fira Code', monospace;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .skill-prefix { opacity: 0.38; }
+
+    .dep-badge {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--faint);
+      color: var(--muted);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .skill-desc {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* Category accent coloring */
+    .sp  .cat-bar { background: var(--superpowers); }
+    .sp  .cat-title { color: var(--superpowers); }
+    .sp  .skill-card::before { background: var(--superpowers); }
+    .sp  .skill-card:hover { box-shadow: 0 8px 28px rgba(167,139,250,0.09); }
+
+    .doc .cat-bar { background: var(--documents); }
+    .doc .cat-title { color: var(--documents); }
+    .doc .skill-card::before { background: var(--documents); }
+    .doc .skill-card:hover { box-shadow: 0 8px 28px rgba(245,158,11,0.09); }
+
+    .des .cat-bar { background: var(--design); }
+    .des .cat-title { color: var(--design); }
+    .des .skill-card::before { background: var(--design); }
+    .des .skill-card:hover { box-shadow: 0 8px 28px rgba(34,211,238,0.09); }
+
+    .dev .cat-bar { background: var(--dev); }
+    .dev .cat-title { color: var(--dev); }
+    .dev .skill-card::before { background: var(--dev); }
+    .dev .skill-card:hover { box-shadow: 0 8px 28px rgba(74,222,128,0.09); }
+
+    .tol .cat-bar { background: var(--tools); }
+    .tol .cat-title { color: var(--tools); }
+    .tol .skill-card::before { background: var(--tools); }
+    .tol .skill-card:hover { box-shadow: 0 8px 28px rgba(251,146,60,0.09); }
+
+    .brn .cat-bar { background: var(--brand); }
+    .brn .cat-title { color: var(--brand); }
+    .brn .skill-card::before { background: var(--brand); }
+    .brn .skill-card:hover { box-shadow: 0 8px 28px rgba(244,114,182,0.09); }
+
+    .dep .cat-bar { background: var(--deprecated); }
+    .dep .cat-title { color: var(--muted); }
+    .dep .skill-card::before { background: var(--deprecated); }
+
+    /* animation stagger per card */
+    .skills-grid .skill-card:nth-child(1)  { animation-delay: 0.04s; }
+    .skills-grid .skill-card:nth-child(2)  { animation-delay: 0.08s; }
+    .skills-grid .skill-card:nth-child(3)  { animation-delay: 0.12s; }
+    .skills-grid .skill-card:nth-child(4)  { animation-delay: 0.16s; }
+    .skills-grid .skill-card:nth-child(5)  { animation-delay: 0.20s; }
+    .skills-grid .skill-card:nth-child(6)  { animation-delay: 0.24s; }
+    .skills-grid .skill-card:nth-child(7)  { animation-delay: 0.28s; }
+    .skills-grid .skill-card:nth-child(8)  { animation-delay: 0.32s; }
+    .skills-grid .skill-card:nth-child(9)  { animation-delay: 0.36s; }
+    .skills-grid .skill-card:nth-child(10) { animation-delay: 0.40s; }
+    .skills-grid .skill-card:nth-child(11) { animation-delay: 0.44s; }
+    .skills-grid .skill-card:nth-child(12) { animation-delay: 0.48s; }
+    .skills-grid .skill-card:nth-child(13) { animation-delay: 0.52s; }
+    .skills-grid .skill-card:nth-child(14) { animation-delay: 0.56s; }
+
+    /* ── HERO BANNER ── */
+    .hero-banner {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      margin-left: -50vw;
+      height: 340px;
+      background-image: url('generated images/modern-team-office.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 8, 15, 0.52);
+      z-index: 1;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      z-index: 2;
+    }
+
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      padding-bottom: 48px;
+      gap: 10px;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(18px, 2.4vw, 26px);
+      color: rgba(228, 224, 216, 0.72);
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    .hero-sub {
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(92, 92, 114, 0.85);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-note {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 0 24px; }
+      .header-row { flex-direction: column; align-items: flex-start; }
+      .header-stat { text-align: left; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-row">
+      <div>
+        <div class="eyebrow">claude code &mdash; superpowers</div>
+        <h1>Skills<em>Catalog</em></h1>
+      </div>
+      <div class="header-stat">
+        <span class="stat-number">44</span>
+        <div class="stat-label">skills available</div>
+      </div>
+    </div>
+    <nav class="nav-strip">
+      <a href="#superpowers" class="nav-pill pill-sp"><span class="dot"></span>Superpowers</a>
+      <a href="#documents"   class="nav-pill pill-doc"><span class="dot"></span>Content &amp; Docs</a>
+      <a href="#design"      class="nav-pill pill-des"><span class="dot"></span>Frontend &amp; Design</a>
+      <a href="#dev"         class="nav-pill pill-dev"><span class="dot"></span>Development</a>
+      <a href="#tools"       class="nav-pill pill-tol"><span class="dot"></span>Claude Code Tools</a>
+      <a href="#brand"       class="nav-pill pill-brn"><span class="dot"></span>Brand</a>
+    </nav>
+  </header>
+
+  <div class="hero-banner">
+    <div class="hero-content">
+      <p class="hero-tagline">Superpowers for professional teams</p>
+      <span class="hero-sub">44 skills &nbsp;·&nbsp; claude code</span>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ── SUPERPOWERS ── -->
+    <section id="superpowers" class="category-section sp">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Superpowers</h2>
+        <span class="cat-count">14 skills</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>using-superpowers</div>
+          <p class="skill-desc">Establishes how to find and use skills at the start of any conversation. Requires Skill tool invocation before any response, including clarifying questions.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>brainstorming</div>
+          <p class="skill-desc">Must be used before any creative work — creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements, and design before implementation.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>writing-plans</div>
+          <p class="skill-desc">Use when you have a spec or requirements for a multi-step task, before touching code. Produces structured implementation plans ready to execute.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>executing-plans</div>
+          <p class="skill-desc">Use when you have a written implementation plan to execute in a separate session with review checkpoints between major steps.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>subagent-driven-development</div>
+          <p class="skill-desc">Use when executing implementation plans with independent tasks in the current session, coordinating multiple subagents in parallel.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>systematic-debugging</div>
+          <p class="skill-desc">Use before proposing fixes when encountering any bug, test failure, or unexpected behavior. Guides structured diagnosis before jumping to solutions.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>test-driven-development</div>
+          <p class="skill-desc">Use before writing implementation code when implementing any feature or bugfix. Enforces a red-green-refactor workflow.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>dispatching-parallel-agents</div>
+          <p class="skill-desc">Use when facing 2 or more independent tasks that can be worked on without shared state or sequential dependencies. Parallelizes effort across multiple agents.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>finishing-a-development-branch</div>
+          <p class="skill-desc">Use when implementation is complete and all tests pass. Guides completion of development work by presenting structured options for merge, PR, or cleanup.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>receiving-code-review</div>
+          <p class="skill-desc">Use before implementing review suggestions, especially if feedback seems unclear or technically questionable. Requires technical rigor and verification, not performative agreement.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>requesting-code-review</div>
+          <p class="skill-desc">Use when completing tasks, implementing major features, or before merging to verify that work meets all requirements.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>writing-skills</div>
+          <p class="skill-desc">Use when creating new skills, editing existing skills, or verifying that skills work correctly before deployment.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>using-git-worktrees</div>
+          <p class="skill-desc">Use when starting feature work that needs isolation from the current workspace, or before executing implementation plans. Creates isolated git worktrees with smart directory selection and safety verification.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">superpowers:</span>verification-before-completion</div>
+          <p class="skill-desc">Use before claiming work is complete, fixed, or passing. Requires running verification commands and confirming output — evidence before assertions, always.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── CONTENT & DOCUMENTS ── -->
+    <section id="documents" class="category-section doc">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Content &amp; Documents</h2>
+        <span class="cat-count">6 skills</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>pdf</div>
+          <p class="skill-desc">Use for anything involving PDF files — reading, extracting text or tables, combining or splitting, rotating pages, adding watermarks, creating new PDFs, filling forms, encrypting, extracting images, and OCR.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>docx</div>
+          <p class="skill-desc">Create, read, edit, and manipulate Word documents (.docx). Handles tables of contents, headings, page numbers, letterheads, tracked changes, comments, and image insertion.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>pptx</div>
+          <p class="skill-desc">Use any time a .pptx file is involved — creating slide decks, reading or extracting content, editing presentations, combining or splitting files, and working with templates, layouts, or speaker notes.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>xlsx</div>
+          <p class="skill-desc">Use any time a spreadsheet file is the primary input or output — opening, reading, editing, or creating .xlsx, .xlsm, .csv, or .tsv files, including cleaning and restructuring messy tabular data.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>internal-comms</div>
+          <p class="skill-desc">Write all kinds of internal communications using company-preferred formats — status reports, leadership updates, newsletters, FAQs, incident reports, project updates, and 3P updates.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>doc-coauthoring</div>
+          <p class="skill-desc">Structured workflow for co-authoring documentation, proposals, technical specs, and decision docs. Helps transfer context efficiently and refine content through iteration.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FRONTEND & DESIGN ── -->
+    <section id="design" class="category-section des">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Frontend &amp; Design</h2>
+        <span class="cat-count">5 skills</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>frontend-design</div>
+          <p class="skill-desc">Create distinctive, production-grade frontend interfaces with high design quality. Generates creative, polished code for web components, pages, artifacts, and applications — avoiding generic AI aesthetics.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>canvas-design</div>
+          <p class="skill-desc">Create beautiful visual art in .png and .pdf documents using design philosophy. Use when the user asks for a poster, piece of art, design, or other static visual artifact.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>theme-factory</div>
+          <p class="skill-desc">Toolkit for styling artifacts with a theme. Offers 10 pre-set themes with colors and fonts that can be applied to slides, docs, reports, HTML landing pages, or generate a new theme on-the-fly.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>algorithmic-art</div>
+          <p class="skill-desc">Create algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use for generative art, flow fields, and particle systems. Creates original work, not copies.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>slack-gif-creator</div>
+          <p class="skill-desc">Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when asked to make a GIF of X doing Y for Slack.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── DEVELOPMENT ── -->
+    <section id="dev" class="category-section dev">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Development</h2>
+        <span class="cat-count">5 skills</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>claude-api</div>
+          <p class="skill-desc">Build, debug, and optimize Claude API / Anthropic SDK applications with prompt caching. Also handles migrating code between Claude model versions and tuning features like thinking, tool use, batch, and citations.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>mcp-builder</div>
+          <p class="skill-desc">Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Supports Python (FastMCP) and Node/TypeScript.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>webapp-testing</div>
+          <p class="skill-desc">Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing screenshots, and viewing browser logs.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>web-artifacts-builder</div>
+          <p class="skill-desc">Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend technologies (React, Tailwind CSS, shadcn/ui). For complex artifacts requiring state management or routing.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>skill-creator</div>
+          <p class="skill-desc">Create new skills, modify and improve existing skills, and measure skill performance. Use to run evals, benchmark performance with variance analysis, or optimize a skill's description for better triggering accuracy.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── CLAUDE CODE TOOLS ── -->
+    <section id="tools" class="category-section tol">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Claude Code Tools</h2>
+        <span class="cat-count">10 skills</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name">update-config</div>
+          <p class="skill-desc">Configure the Claude Code harness via settings.json. Required for automated behaviors (hooks), permissions, environment variables, and any changes to settings.json or settings.local.json.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">keybindings-help</div>
+          <p class="skill-desc">Customize keyboard shortcuts, rebind keys, add chord bindings, or modify ~/.claude/keybindings.json. Use when changing how you interact with Claude Code via the keyboard.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">simplify</div>
+          <p class="skill-desc">Review recently changed code for reuse, quality, and efficiency, then fix any issues found. A post-implementation cleanup pass focused on code health.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">fewer-permission-prompts</div>
+          <p class="skill-desc">Scan your transcripts for common read-only Bash and MCP tool calls, then add a prioritized allowlist to project .claude/settings.json to reduce interruptions from permission prompts.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">loop</div>
+          <p class="skill-desc">Run a prompt or slash command on a recurring interval (e.g., /loop 5m /foo). Omit the interval to let the model self-pace. Use when setting up recurring tasks or polling for status changes.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">schedule</div>
+          <p class="skill-desc">Create, update, list, or run scheduled remote agents (routines) that execute on a cron schedule. Use for recurring automated tasks or one-time scheduled runs.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">find-skills</div>
+          <p class="skill-desc">Helps discover and install agent skills when asking "how do I do X", "find a skill for X", or expressing interest in extending capabilities. Searches available skill registries.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">init</div>
+          <p class="skill-desc">Initialize a new CLAUDE.md file with codebase documentation. Analyzes the project structure and generates a starter memory file for the repository.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">review</div>
+          <p class="skill-desc">Review a pull request. Analyzes diffs, checks for correctness, potential issues, and adherence to project conventions. Use before approving or merging.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-name">security-review</div>
+          <p class="skill-desc">Complete a security review of the pending changes on the current branch. Identifies vulnerabilities, risky patterns, and security regressions introduced by recent modifications.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── BRAND ── -->
+    <section id="brand" class="category-section brn">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Brand</h2>
+        <span class="cat-count">1 skill</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-name"><span class="skill-prefix">claude-api:</span>brand-guidelines</div>
+          <p class="skill-desc">Applies Anthropic's official brand colors and typography to any artifact that may benefit from the company's look-and-feel — slides, reports, landing pages, and visual content.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── DEPRECATED ── -->
+    <section class="category-section dep">
+      <div class="cat-header">
+        <div class="cat-bar"></div>
+        <h2 class="cat-title">Deprecated</h2>
+        <span class="cat-count">3 skills</span>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card deprecated">
+          <div class="skill-name">
+            <span class="skill-prefix">superpowers:</span>brainstorm
+            <span class="dep-badge">deprecated</span>
+          </div>
+          <p class="skill-desc">Use <code style="font-family:'Fira Code',monospace;font-size:11px;">superpowers:brainstorming</code> instead.</p>
+        </div>
+
+        <div class="skill-card deprecated">
+          <div class="skill-name">
+            <span class="skill-prefix">superpowers:</span>execute-plan
+            <span class="dep-badge">deprecated</span>
+          </div>
+          <p class="skill-desc">Use <code style="font-family:'Fira Code',monospace;font-size:11px;">superpowers:executing-plans</code> instead.</p>
+        </div>
+
+        <div class="skill-card deprecated">
+          <div class="skill-name">
+            <span class="skill-prefix">superpowers:</span>write-plan
+            <span class="dep-badge">deprecated</span>
+          </div>
+          <p class="skill-desc">Use <code style="font-family:'Fira Code',monospace;font-size:11px;">superpowers:writing-plans</code> instead.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="footer-note">claude-code &nbsp;&mdash;&nbsp; skills catalog &nbsp;&mdash;&nbsp; 2026-05-03</span>
+    <span class="footer-note">44 active &nbsp;/&nbsp; 3 deprecated</span>
+  </footer>
+
+</div>
+</body>
+</html>
