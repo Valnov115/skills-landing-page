@@ -6,5 +6,5 @@
 # Local Claude Code settings (machine-specific paths)
 .claude/settings.local.json
 
-# Generated images
-generated images/
+# Generated images (tracked for deployment)
+# generated images/
